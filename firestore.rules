@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Products catalog
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Delivery zones
+    match /delivery_zones/{zoneId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Site settings (hero, etc.)
+    match /siteSettings/{settingId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // User profiles and subcollections
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      match /designs/{designId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /savedDesigns/{designId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /cart/{cartId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /orders/{orderId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Top-level savedDesigns collection
+    match /savedDesigns/{designId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Proof of delivery
+    match /proof_of_delivery/{podId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Settings
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Collection group for orders (for rider or customer lookup)
+    match /{path=**}/orders/{orderId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

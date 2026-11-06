@@ -1,0 +1,6 @@
+{
+  "name": "ElevenX Kit Mobile App",
+  "description": "ElevenX Kit Mobile App - Complete Customer, Rider, and Admin Platform for Custom Football Kits & Sportswear.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

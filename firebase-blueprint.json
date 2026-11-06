@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Football jersey or sportswear product in the catalog",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique product ID" },
+        "name": { "type": "string", "maxLength": 100, "description": "Name of the jersey" },
+        "team": { "type": "string", "maxLength": 100, "description": "Club or National Team" },
+        "category": { "type": "string", "enum": ["Jerseys", "Club", "National", "Retro", "Custom"], "description": "Category" },
+        "price": { "type": "number", "description": "Price in UGX" },
+        "image": { "type": "string", "maxLength": 1000, "description": "Main image URL" },
+        "frontImage": { "type": "string", "maxLength": 1000, "description": "Front view image URL" },
+        "backImage": { "type": "string", "maxLength": 1000, "description": "Back view image URL" },
+        "stock": { "type": "number", "description": "Available inventory" },
+        "active": { "type": "boolean", "description": "Whether product is active" }
+      },
+      "required": ["id", "name", "price", "image"]
+    },
+    "Design": {
+      "title": "Design",
+      "description": "Saved customized jersey design created in the studio",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique design identifier" },
+        "userId": { "type": "string", "description": "Owner user UID" },
+        "productId": { "type": "number", "description": "Base jersey product ID" },
+        "jersey": { "type": "string", "maxLength": 100, "description": "Team / jersey name" },
+        "name": { "type": "string", "maxLength": 30, "description": "Custom player name" },
+        "number": { "type": "string", "maxLength": 5, "description": "Squad number" },
+        "tag": { "type": "string", "maxLength": 20, "description": "Tag or badge label" },
+        "textColor": { "type": "string", "maxLength": 20, "description": "Print color hex" },
+        "font": { "type": "string", "maxLength": 50, "description": "Print typeface" },
+        "fontSize": { "type": "number", "description": "Font size" },
+        "side": { "type": "string", "enum": ["Front", "Back"], "description": "Active side" },
+        "artworkImage": { "type": "string", "maxLength": 2000000, "description": "Custom crest or artwork image data or URL" },
+        "artworkX": { "type": "number", "description": "Artwork X position percentage" },
+        "artworkY": { "type": "number", "description": "Artwork Y position percentage" },
+        "artworkScale": { "type": "number", "description": "Artwork scale multiplier" }
+      },
+      "required": ["id", "userId", "jersey"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase order for jerseys with delivery instructions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique order ID" },
+        "userId": { "type": "string", "description": "Customer user UID" },
+        "customerName": { "type": "string", "maxLength": 100, "description": "Customer name" },
+        "phone": { "type": "string", "maxLength": 30, "description": "Customer contact phone" },
+        "address": { "type": "string", "maxLength": 250, "description": "Delivery address" },
+        "zone": { "type": "string", "maxLength": 100, "description": "Delivery zone" },
+        "total": { "type": "number", "description": "Total amount in UGX" },
+        "subtotal": { "type": "number", "description": "Subtotal in UGX" },
+        "deliveryFee": { "type": "number", "description": "Delivery fee in UGX" },
+        "status": { "type": "string", "enum": ["Pending payment", "Confirmed", "Preparing", "Ready for dispatch", "Out for delivery", "Delivered", "Cancelled"], "description": "Order processing status" },
+        "deliveryStatus": { "type": "string", "enum": ["Pending", "Assigned", "Picked up", "Delivered"], "description": "Rider delivery status" },
+        "riderId": { "type": "string", "description": "Assigned rider UID" }
+      },
+      "required": ["id", "userId", "customerName", "phone", "total", "status"]
+    },
+    "HeroSettings": {
+      "title": "HeroSettings",
+      "description": "Homepage hero banner and media configuration",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 120, "description": "Hero title" },
+        "subtitle": { "type": "string", "maxLength": 250, "description": "Hero subtitle" },
+        "videoUrl": { "type": "string", "maxLength": 1000, "description": "Hero looping video URL" },
+        "ctaLabel": { "type": "string", "maxLength": 50, "description": "CTA button text" },
+        "ctaUrl": { "type": "string", "maxLength": 150, "description": "CTA target link" }
+      }
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile document containing personal details and avatar image",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "User UID" },
+        "email": { "type": "string", "maxLength": 150, "description": "User email address" },
+        "displayName": { "type": "string", "maxLength": 100, "description": "User display name" },
+        "full_name": { "type": "string", "maxLength": 100, "description": "User full name" },
+        "avatarUrl": { "type": "string", "maxLength": 2000000, "description": "User profile avatar image URL or data URI" },
+        "photoURL": { "type": "string", "maxLength": 2000000, "description": "Auth synchronized avatar image URL" },
+        "phone": { "type": "string", "maxLength": 30, "description": "Phone number" },
+        "address": { "type": "string", "maxLength": 250, "description": "Delivery address" },
+        "city": { "type": "string", "maxLength": 100, "description": "City" },
+        "role": { "type": "string", "description": "User account role" },
+        "updatedAt": { "type": "string", "description": "Timestamp of last profile update" }
+      }
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Public catalog of football jerseys"
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile document including avatar, contact, and delivery details"
+    },
+    "/users/{userId}/designs/{designId}": {
+      "schema": "Design",
+      "description": "Private custom jerseys saved by users"
+    },
+    "/users/{userId}/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer orders history"
+    },
+    "/siteSettings/{settingId}": {
+      "schema": "HeroSettings",
+      "description": "Global website banner and video settings"
+    }
+  }
+}
